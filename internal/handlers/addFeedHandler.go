@@ -34,7 +34,7 @@ func AddFeedHandler(s *config.State, cmd config.Command) error {
 	}
 
 	f, err := s.DB.CreateFeed(ctx, database.CreateFeedParams{
-		ID:        uuid.UUID{},
+		ID:        uuid.New(),
 		CreatedAt: time.Time{},
 		UpdatedAt: time.Time{},
 		UserID:    user.ID,
