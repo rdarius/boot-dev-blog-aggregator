@@ -52,7 +52,7 @@ func AddFeedHandler(s *config.State, cmd config.Command, user database.User) err
 		return err
 	}
 
-	fmt.Printf("%v", f)
+	fmt.Printf("%v\n", f)
 
 	return nil
 }

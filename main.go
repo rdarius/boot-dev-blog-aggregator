@@ -40,6 +40,7 @@ func main() {
 	commands.Register("addfeed", middlewareLoggedIn(handlers.AddFeedHandler))
 	commands.Register("feeds", handlers.ListFeedsHandler)
 	commands.Register("follow", middlewareLoggedIn(handlers.FollowFeedHandler))
+	commands.Register("unfollow", middlewareLoggedIn(handlers.UnfollowFeedHandler))
 	commands.Register("following", middlewareLoggedIn(handlers.GetFeedFollowsByUserHandler))
 
 	if len(os.Args) < 2 {

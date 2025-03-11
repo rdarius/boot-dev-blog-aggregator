@@ -24,7 +24,7 @@ func FetchFeedHandler(s *config.State, cmd config.Command) error {
 		os.Exit(1)
 	}
 
-	fmt.Printf("%v", feed)
+	fmt.Printf("%v\n", feed)
 
 	return nil
 }

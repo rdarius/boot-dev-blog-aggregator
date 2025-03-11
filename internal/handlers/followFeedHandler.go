@@ -56,7 +56,7 @@ func FollowFeedHandler(s *config.State, cmd config.Command, user database.User) 
 		return err
 	}
 
-	fmt.Printf("%v", feed)
+	fmt.Printf("%v\n", feed)
 
 	return nil
 }
