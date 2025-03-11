@@ -1,17 +1,27 @@
 package handlers
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"github.com/rdarius/boot-dev-blog-aggregator/internal/config"
+	"os"
 )
 
-func HandlerLogin(s *config.State, cmd config.Command) error {
+func LoginHandler(s *config.State, cmd config.Command) error {
 	if len(cmd.Args) < 1 {
 		return errors.New("missing required argument USERNAME")
 	}
 
-	err := s.Config.SetUser(cmd.Args[0])
+	ctx := context.Background()
+
+	u, err := s.DB.GetUser(ctx, cmd.Args[0])
+	if err != nil {
+		fmt.Println("User does not exist")
+		os.Exit(1)
+	}
+
+	err = s.Config.SetUser(u.Name)
 	if err != nil {
 		return fmt.Errorf("failed to set current user: %w", err)
 	}

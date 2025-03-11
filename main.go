@@ -1,7 +1,10 @@
 package main
 
 import (
+	"database/sql"
+	_ "github.com/lib/pq"
 	"github.com/rdarius/boot-dev-blog-aggregator/internal/config"
+	"github.com/rdarius/boot-dev-blog-aggregator/internal/database"
 	"github.com/rdarius/boot-dev-blog-aggregator/internal/handlers"
 	"log"
 	"os"
@@ -16,7 +19,11 @@ func main() {
 		log.Fatal(err)
 	}
 
+	db, err := sql.Open("postgres", cfg.DbUrl)
+	dbQueries := database.New(db)
+
 	state := config.State{
+		DB:     dbQueries,
 		Config: &cfg,
 	}
 
@@ -24,7 +31,8 @@ func main() {
 		Commands: map[string]func(*config.State, config.Command) error{},
 	}
 
-	commands.Register("login", handlers.HandlerLogin)
+	commands.Register("login", handlers.LoginHandler)
+	commands.Register("register", handlers.RegisterHandler)
 
 	if len(os.Args) < 2 {
 		log.Fatal("usage: boot-dev-blog-aggregator <command> [args...]")
