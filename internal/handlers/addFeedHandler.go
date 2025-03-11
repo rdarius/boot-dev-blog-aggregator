@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func AddFeedHandler(s *config.State, cmd config.Command) error {
+func AddFeedHandler(s *config.State, cmd config.Command, user database.User) error {
 
 	if len(cmd.Args) < 2 {
 		log.Fatal("usage: boot-dev-blog-aggregator addfeed NAME URL")
@@ -40,6 +40,17 @@ func AddFeedHandler(s *config.State, cmd config.Command) error {
 		UserID:    user.ID,
 		Url:       url,
 		Name:      name,
+	})
+	if err != nil {
+		return err
+	}
+
+	_, err = s.DB.CreateFeedFollow(ctx, database.CreateFeedFollowParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Time{},
+		UpdatedAt: time.Time{},
+		UserID:    user.ID,
+		FeedID:    f.ID,
 	})
 	if err != nil {
 		return err
