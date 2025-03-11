@@ -42,6 +42,7 @@ func main() {
 	commands.Register("follow", middlewareLoggedIn(handlers.FollowFeedHandler))
 	commands.Register("unfollow", middlewareLoggedIn(handlers.UnfollowFeedHandler))
 	commands.Register("following", middlewareLoggedIn(handlers.GetFeedFollowsByUserHandler))
+	commands.Register("browse", middlewareLoggedIn(handlers.BrowseHandler))
 
 	if len(os.Args) < 2 {
 		log.Fatal("usage: boot-dev-blog-aggregator <command> [args...]")
