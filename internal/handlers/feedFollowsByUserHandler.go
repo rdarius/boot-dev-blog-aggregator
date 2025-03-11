@@ -4,14 +4,11 @@ import (
 	"context"
 	"fmt"
 	"github.com/rdarius/boot-dev-blog-aggregator/internal/config"
+	"github.com/rdarius/boot-dev-blog-aggregator/internal/database"
 )
 
-func GetFeedFollowsByUserHandler(s *config.State, cmd config.Command) error {
+func GetFeedFollowsByUserHandler(s *config.State, cmd config.Command, user database.User) error {
 	ctx := context.Background()
-	user, err := s.DB.GetUser(ctx, s.Config.CurrentUserName)
-	if err != nil {
-		return err
-	}
 
 	ff, err := s.DB.GetFeedFollowsByUser(ctx, user.ID)
 

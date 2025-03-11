@@ -12,15 +12,11 @@ import (
 	"time"
 )
 
-func FollowFeedHandler(s *config.State, cmd config.Command) error {
+func FollowFeedHandler(s *config.State, cmd config.Command, user database.User) error {
 	if len(cmd.Args) < 1 {
 		log.Fatal("usage: boot-dev-blog-aggregator follow URL")
 	}
 	ctx := context.Background()
-	user, err := s.DB.GetUser(ctx, s.Config.CurrentUserName)
-	if err != nil {
-		return err
-	}
 
 	url := cmd.Args[0]
 

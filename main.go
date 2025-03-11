@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	_ "github.com/lib/pq"
 	"github.com/rdarius/boot-dev-blog-aggregator/internal/config"
@@ -36,10 +37,10 @@ func main() {
 	commands.Register("reset", handlers.ResetUsersHandler)
 	commands.Register("users", handlers.GetUsersHandler)
 	commands.Register("agg", handlers.FetchFeedHandler)
-	commands.Register("addfeed", handlers.AddFeedHandler)
+	commands.Register("addfeed", middlewareLoggedIn(handlers.AddFeedHandler))
 	commands.Register("feeds", handlers.ListFeedsHandler)
-	commands.Register("follow", handlers.FollowFeedHandler)
-	commands.Register("following", handlers.GetFeedFollowsByUserHandler)
+	commands.Register("follow", middlewareLoggedIn(handlers.FollowFeedHandler))
+	commands.Register("following", middlewareLoggedIn(handlers.GetFeedFollowsByUserHandler))
 
 	if len(os.Args) < 2 {
 		log.Fatal("usage: boot-dev-blog-aggregator <command> [args...]")
@@ -52,5 +53,15 @@ func main() {
 	err = commands.Run(&state, config.Command{Name: name, Args: args})
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+func middlewareLoggedIn(handler func(s *config.State, cmd config.Command, user database.User) error) func(*config.State, config.Command) error {
+	return func(state *config.State, command config.Command) error {
+		user, err := state.DB.GetUser(context.Background(), state.Config.CurrentUserName)
+		if err != nil {
+			log.Fatal("user not logged in")
+		}
+		return handler(state, command, user)
 	}
 }

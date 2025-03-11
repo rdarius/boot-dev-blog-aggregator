@@ -19,15 +19,11 @@ func AddFeedHandler(s *config.State, cmd config.Command, user database.User) err
 	}
 
 	ctx := context.Background()
-	user, err := s.DB.GetUser(ctx, s.Config.CurrentUserName)
-	if err != nil {
-		return err
-	}
 
 	name := cmd.Args[0]
 	url := cmd.Args[1]
 
-	_, err = rss.FetchFeed(ctx, url)
+	_, err := rss.FetchFeed(ctx, url)
 	if err != nil {
 		fmt.Printf("Failed to fetch feed: %v\n", err)
 		os.Exit(1)
