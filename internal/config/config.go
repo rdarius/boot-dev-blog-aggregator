@@ -3,7 +3,6 @@ package config
 import (
 	"encoding/json"
 	"os"
-	"os/user"
 )
 
 const configFileName = ".gatorconfig.json"
@@ -31,22 +30,9 @@ func Read() (Config, error) {
 
 }
 
-func (config Config) SetUser() error {
-	usr, err := user.Current()
-
-	if err != nil {
-		return err
-	}
-
-	config.CurrentUserName = usr.Username
-
-	err = write(config)
-	if err != nil {
-		return err
-	}
-
-	return nil
-
+func (config Config) SetUser(username string) error {
+	config.CurrentUserName = username
+	return write(config)
 }
 
 func getConfigFilePath() (string, error) {
@@ -68,7 +54,9 @@ func write(cfg Config) error {
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		_ = file.Close()
+	}(file)
 
 	encoder := json.NewEncoder(file)
 	encoder.SetIndent("", "  ") // For pretty printing
